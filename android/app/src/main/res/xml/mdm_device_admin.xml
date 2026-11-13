@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Policies this device admin uses.
+      force-lock : DevicePolicyManager.lockNow()   (device lock)
+      wipe-data  : DevicePolicyManager.wipeData()  (factory reset)
+    Device Owner APIs (app suspension, user restrictions) need no entry here;
+    they are authorised by Device Owner status itself.
+-->
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-policies>
+        <force-lock />
+        <wipe-data />
+    </uses-policies>
+</device-admin>

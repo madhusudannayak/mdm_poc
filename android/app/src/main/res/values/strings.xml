@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mdm_admin_label">MDM Device Management</string>
+    <string name="mdm_admin_description">Allows your organization to manage this device: lock it, reset it, and control which applications can be used or installed.</string>
+    <string name="mdm_admin_disable_warning">Disabling this administrator removes your organization\'s management of this device.</string>
+</resources>
