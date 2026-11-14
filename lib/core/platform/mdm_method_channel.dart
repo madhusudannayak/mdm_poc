@@ -240,6 +240,12 @@ class MdmMethodChannel implements MdmPlatformInterface {
     arguments: () => _scheduleIdArguments(scheduleId),
   );
 
+  @override
+  Future<ScheduleSyncReportModel> synchronizeApplicationSchedules() => _invoke(
+    MdmMethods.synchronizeApplicationSchedules,
+    ScheduleSyncReportModel.fromMap,
+  );
+
   // --- Policies -----------------------------------------------------------
 
   @override

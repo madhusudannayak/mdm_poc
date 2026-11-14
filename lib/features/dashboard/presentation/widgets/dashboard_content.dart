@@ -50,6 +50,64 @@ class DashboardContent extends StatelessWidget {
           icon: Icons.phone_android_outlined,
           onTap: () => _open(context, AppRoutes.deviceInformation),
         ),
+        const SizedBox(height: 12),
+        StatusCard(
+          title: 'Installed Applications',
+          status: '${overview.installedApplicationCount} installed',
+          icon: Icons.apps_outlined,
+          onTap: () => _open(context, AppRoutes.applications),
+        ),
+        const SizedBox(height: 12),
+        StatusCard(
+          title: 'Blocked Applications',
+          status: '${overview.blockedApplicationCount} blocked',
+          tone: overview.blockedApplicationCount > 0
+              ? StatusTone.negative
+              : StatusTone.neutral,
+          icon: Icons.block,
+          onTap: () => _open(context, AppRoutes.blockedApplications),
+        ),
+        const SizedBox(height: 12),
+        StatusCard(
+          title: 'Allowed Applications',
+          status: '${overview.allowedApplicationCount} allowed',
+          tone: overview.allowedApplicationCount > 0
+              ? StatusTone.positive
+              : StatusTone.neutral,
+          icon: Icons.check_circle_outline,
+          onTap: () => _open(context, AppRoutes.allowedApplications),
+        ),
+        const SizedBox(height: 12),
+        StatusCard(
+          title: 'Time-Based Restrictions',
+          status: '${overview.activeScheduleCount} active',
+          tone: overview.activeScheduleCount > 0
+              ? StatusTone.positive
+              : StatusTone.neutral,
+          icon: Icons.schedule_outlined,
+          onTap: () => _open(context, AppRoutes.timeRestrictions),
+        ),
+        const SizedBox(height: 12),
+        StatusCard(
+          title: 'Installation Restrictions',
+          status: overview.installationsBlocked
+              ? 'All installations blocked'
+              : overview.unknownSourcesBlocked
+              ? 'Unknown sources blocked'
+              : 'No restrictions',
+          tone: overview.installationsBlocked || overview.unknownSourcesBlocked
+              ? StatusTone.positive
+              : StatusTone.neutral,
+          icon: Icons.install_mobile_outlined,
+          onTap: () => _open(context, AppRoutes.installationRestrictions),
+        ),
+        const SizedBox(height: 12),
+        StatusCard(
+          title: 'Device Security',
+          description: 'Lock device, factory reset',
+          icon: Icons.security_outlined,
+          onTap: () => _open(context, AppRoutes.deviceSecurity),
+        ),
       ],
     );
   }

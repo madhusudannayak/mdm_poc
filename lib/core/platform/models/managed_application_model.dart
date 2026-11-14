@@ -4,6 +4,27 @@ import 'package:equatable/equatable.dart';
 
 import 'map_reader.dart';
 
+/// The organization's recorded decision for a package.
+enum ApplicationPolicyStatus {
+  /// On the blocklist: explicitly prohibited, enforced by suspension.
+  blocked('BLOCKED'),
+
+  /// On the allowlist: explicitly permitted.
+  allowed('ALLOWED'),
+
+  /// No decision recorded.
+  unspecified('UNSPECIFIED');
+
+  const ApplicationPolicyStatus(this.wireValue);
+
+  final String wireValue;
+
+  static ApplicationPolicyStatus fromWire(String? value) => values.firstWhere(
+    (status) => status.wireValue == value,
+    orElse: () => ApplicationPolicyStatus.unspecified,
+  );
+}
+
 /// An installed application as reported by Android `PackageManager`, together
 /// with the management state applied to it.
 class ManagedApplicationModel extends Equatable {
@@ -15,6 +36,7 @@ class ManagedApplicationModel extends Equatable {
     required this.isSuspended,
     required this.isHidden,
     required this.isUninstallBlocked,
+    this.policyStatus = ApplicationPolicyStatus.unspecified,
     this.versionName,
     this.versionCode,
     this.installerPackageName,
@@ -35,6 +57,9 @@ class ManagedApplicationModel extends Equatable {
       isHidden: reader.boolean('isHidden'),
       isUninstallBlocked: reader.boolean('isUninstallBlocked'),
       installerPackageName: reader.stringOrNull('installerPackageName'),
+      policyStatus: ApplicationPolicyStatus.fromWire(
+        reader.stringOrNull('policyStatus'),
+      ),
       iconPng: icon is Uint8List ? icon : null,
     );
   }
@@ -49,6 +74,7 @@ class ManagedApplicationModel extends Equatable {
   final bool isHidden;
   final bool isUninstallBlocked;
   final String? installerPackageName;
+  final ApplicationPolicyStatus policyStatus;
   final Uint8List? iconPng;
 
   @override
@@ -63,6 +89,7 @@ class ManagedApplicationModel extends Equatable {
     isHidden,
     isUninstallBlocked,
     installerPackageName,
+    policyStatus,
     iconPng,
   ];
 }

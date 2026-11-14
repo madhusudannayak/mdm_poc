@@ -59,6 +59,8 @@ abstract final class MdmMethods {
   static const String getApplicationSchedules = 'getApplicationSchedules';
   static const String enableApplicationSchedule = 'enableApplicationSchedule';
   static const String disableApplicationSchedule = 'disableApplicationSchedule';
+  static const String synchronizeApplicationSchedules =
+      'synchronizeApplicationSchedules';
 
   // Policies
   static const String applyDevicePolicy = 'applyDevicePolicy';
@@ -80,6 +82,9 @@ abstract final class MdmErrorCodes {
   static const String deviceAdminUnsupported = 'DEVICE_ADMIN_UNSUPPORTED';
   static const String invalidArgument = 'INVALID_ARGUMENT';
   static const String packageNotFound = 'PACKAGE_NOT_FOUND';
+  static const String packageNotSuspendable = 'PACKAGE_NOT_SUSPENDABLE';
+  static const String scheduleNotFound = 'SCHEDULE_NOT_FOUND';
+  static const String factoryResetNotPerformed = 'FACTORY_RESET_NOT_PERFORMED';
   static const String unsupportedAndroidVersion = 'UNSUPPORTED_ANDROID_VERSION';
   static const String securityException = 'SECURITY_EXCEPTION';
   static const String operationFailed = 'OPERATION_FAILED';

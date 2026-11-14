@@ -1,0 +1,12 @@
+import '../../../../core/utils/result.dart';
+import '../entities/installation_restriction_status.dart';
+import '../repositories/installation_repository.dart';
+
+class SetInstallationsBlockedUseCase {
+  const SetInstallationsBlockedUseCase(this._repository);
+
+  final InstallationRepository _repository;
+
+  Future<Result<InstallationRestrictionStatus>> call({required bool blocked}) =>
+      _repository.setInstallationsBlocked(blocked: blocked);
+}

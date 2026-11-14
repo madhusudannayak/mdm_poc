@@ -54,6 +54,28 @@ Map<String, Object?> managementStatusMap({
   'adminComponent': 'com.example.mdd_poc/.mdm.admin.MdmDeviceAdminReceiver',
 };
 
+Map<String, Object?> applicationMap({
+  String packageName = 'com.google.android.youtube',
+  String applicationName = 'YouTube',
+  bool isSystemApplication = false,
+  bool isSuspended = false,
+  bool isHidden = false,
+  String policyStatus = 'UNSPECIFIED',
+}) => {
+  'packageName': packageName,
+  'applicationName': applicationName,
+  'versionName': '1.2.3',
+  'versionCode': 123,
+  'isSystemApplication': isSystemApplication,
+  'isEnabled': true,
+  'isSuspended': isSuspended,
+  'isHidden': isHidden,
+  'isUninstallBlocked': false,
+  'installerPackageName': 'com.android.vending',
+  'policyStatus': policyStatus,
+  'iconPng': null,
+};
+
 Map<String, Object?> successEnvelope(Object? data) => {
   'success': true,
   'message': 'Operation completed',

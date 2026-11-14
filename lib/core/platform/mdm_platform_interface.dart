@@ -56,8 +56,11 @@ abstract interface class MdmPlatformInterface {
   Future<void> lockDevice();
 
   /// Factory resets the device. [confirmed] must be true and must originate
-  /// from an explicit user confirmation. The device may begin wiping before
-  /// any reply is delivered, so callers must not depend on completion.
+  /// from an explicit user confirmation.
+  ///
+  /// A device that resets restarts before replying, so this normally never
+  /// completes. It completes with `FACTORY_RESET_NOT_PERFORMED` when the
+  /// device is still running after a grace period.
   Future<void> wipeDevice({required bool confirmed});
 
   // --- Scheduling ---------------------------------------------------------
@@ -71,6 +74,10 @@ abstract interface class MdmPlatformInterface {
   Future<List<ApplicationScheduleModel>> getApplicationSchedules();
   Future<void> enableApplicationSchedule(int scheduleId);
   Future<void> disableApplicationSchedule(int scheduleId);
+
+  /// Re-evaluates every schedule now, corrects application state and
+  /// re-arms the next transition.
+  Future<ScheduleSyncReportModel> synchronizeApplicationSchedules();
 
   // --- Policies -----------------------------------------------------------
   Future<DevicePolicyModel> applyDevicePolicy(DevicePolicyModel policy);

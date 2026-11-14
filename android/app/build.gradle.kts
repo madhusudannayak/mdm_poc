@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -51,5 +52,12 @@ flutter {
 dependencies {
     // Runs native MDM operations off the main thread.
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    // Durable storage for application schedules.
+    implementation("androidx.room:room-runtime:2.8.5")
+    implementation("androidx.room:room-ktx:2.8.5")
+    ksp("androidx.room:room-compiler:2.8.5")
+    // Deferrable periodic reconciliation; the fallback when exact alarms
+    // are unavailable or an alarm is missed.
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
     testImplementation("junit:junit:4.13.2")
 }

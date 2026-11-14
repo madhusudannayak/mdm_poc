@@ -1,6 +1,7 @@
 package com.example.mdd_poc.mdm.device
 
 import android.app.AlarmManager
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -34,6 +35,8 @@ class MdmDeviceManager(
                     (isDeviceOwner && AndroidVersionUtils.hasGlobalUnknownSourcesRestriction),
                 "deviceLock" to isAdminActive,
                 "deviceWipe" to isDeviceOwner,
+                "lockScreenSecured" to
+                    (context.getSystemService(KeyguardManager::class.java)?.isDeviceSecure ?: false),
                 "exactAlarms" to canScheduleExactAlarms(),
             ),
         )

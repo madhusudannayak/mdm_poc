@@ -80,3 +80,34 @@ handle `ACTION_GET_PROVISIONING_MODE` and `ACTION_ADMIN_POLICY_COMPLIANCE`,
 plus a hosted, signed APK and its checksum in the QR payload. This is not
 implemented yet. Change the application ID from `com.example.mdd_poc` before
 then: the Device Owner component name cannot change after enrolment.
+
+## Exact alarms for time-based restrictions
+
+Time restrictions switch at the configured minute only if the app holds the
+"Alarms & reminders" special access (Android 12+). Being Device Owner does not
+grant it. Without it the app still works, using an inexact alarm (Android may
+deliver it up to about an hour late) plus a 15-minute reconciliation job, and
+the Time Restrictions screen shows a notice.
+
+Grant it on the device under **Settings > Apps > Special app access > Alarms &
+reminders**, or during development:
+
+```bash
+adb shell appops set com.example.mdd_poc SCHEDULE_EXACT_ALARM allow
+```
+
+The app notices the change and re-arms its alarm as exact.
+
+## Installation restrictions, lock and factory reset
+
+- **Block all installations** (`DISALLOW_INSTALL_APPS`) also blocks
+  `adb install` and therefore `flutter run`. On a development device, switch it
+  off in the app before deploying a new build. If the app itself is broken and
+  the restriction is on, the only way out is a factory reset.
+- **Block unknown sources** blocks sideloading only; ADB and store installs
+  still work.
+- **Lock device** needs a screen lock (PIN, pattern or password) to be a real
+  lock. Without one, Android only turns the screen off.
+- **Factory reset** must be tested on a real dedicated device. Emulator images
+  without a recovery (`/misc`) partition accept the request but cannot perform
+  it; the app then reports `FACTORY_RESET_NOT_PERFORMED` after 30 seconds.

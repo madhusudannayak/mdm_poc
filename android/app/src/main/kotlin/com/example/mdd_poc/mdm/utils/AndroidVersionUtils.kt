@@ -14,6 +14,9 @@ object AndroidVersionUtils {
     /** Android 10: `DISALLOW_INSTALL_UNKNOWN_SOURCES_GLOBALLY`. */
     val hasGlobalUnknownSourcesRestriction: Boolean get() = isAtLeast(Build.VERSION_CODES.Q)
 
+    /** Android 11: `PackageManager.getInstallSourceInfo`. */
+    val hasInstallSourceInfo: Boolean get() = isAtLeast(Build.VERSION_CODES.R)
+
     /** Android 12: exact alarms became a revocable special access. */
     val hasExactAlarmSpecialAccess: Boolean get() = isAtLeast(Build.VERSION_CODES.S)
 

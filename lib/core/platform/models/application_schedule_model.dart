@@ -16,6 +16,10 @@ class ApplicationScheduleModel extends Equatable {
     required this.daysOfWeek,
     this.id,
     this.enabled = true,
+    this.applicationName,
+    this.isWithinAllowedWindow,
+    this.isApplicationSuspended,
+    this.nextTransitionAt,
   });
 
   factory ApplicationScheduleModel.fromMap(Object? source) {
@@ -27,6 +31,10 @@ class ApplicationScheduleModel extends Equatable {
       endMinuteOfDay: reader.integer('endMinuteOfDay'),
       daysOfWeek: reader.intList('daysOfWeek'),
       enabled: reader.boolean('enabled'),
+      applicationName: reader.stringOrNull('applicationName'),
+      isWithinAllowedWindow: reader.booleanOrNull('isWithinAllowedWindow'),
+      isApplicationSuspended: reader.booleanOrNull('isApplicationSuspended'),
+      nextTransitionAt: reader.integerOrNull('nextTransitionAt'),
     );
   }
 
@@ -37,6 +45,18 @@ class ApplicationScheduleModel extends Equatable {
   final int endMinuteOfDay;
   final List<int> daysOfWeek;
   final bool enabled;
+
+  // Live state reported by the device; never sent back to it.
+
+  /// Null when the application is not installed.
+  final String? applicationName;
+  final bool? isWithinAllowedWindow;
+
+  /// Real suspension state; null when the application is not installed.
+  final bool? isApplicationSuspended;
+
+  /// Epoch milliseconds of the next allowed/restricted change.
+  final int? nextTransitionAt;
 
   bool get crossesMidnight => endMinuteOfDay <= startMinuteOfDay;
 
@@ -57,5 +77,82 @@ class ApplicationScheduleModel extends Equatable {
     endMinuteOfDay,
     daysOfWeek,
     enabled,
+    applicationName,
+    isWithinAllowedWindow,
+    isApplicationSuspended,
+    nextTransitionAt,
+  ];
+}
+
+class ScheduleSyncFailureModel extends Equatable {
+  const ScheduleSyncFailureModel({
+    required this.packageName,
+    required this.errorCode,
+    required this.message,
+  });
+
+  factory ScheduleSyncFailureModel.fromMap(Object? source) {
+    final reader = MapReader(source, context: 'ScheduleSyncFailure');
+    return ScheduleSyncFailureModel(
+      packageName: reader.string('packageName'),
+      errorCode: reader.string('errorCode'),
+      message: reader.string('message'),
+    );
+  }
+
+  final String packageName;
+  final String errorCode;
+  final String message;
+
+  @override
+  List<Object?> get props => [packageName, errorCode, message];
+}
+
+/// Result of one native reconciliation pass over all schedules.
+class ScheduleSyncReportModel extends Equatable {
+  const ScheduleSyncReportModel({
+    required this.isDeviceOwner,
+    required this.evaluatedPackages,
+    required this.changedPackages,
+    required this.failures,
+    required this.exactAlarmScheduled,
+    this.nextTransitionAt,
+  });
+
+  factory ScheduleSyncReportModel.fromMap(Object? source) {
+    final reader = MapReader(source, context: 'ScheduleSyncReport');
+    return ScheduleSyncReportModel(
+      isDeviceOwner: reader.boolean('isDeviceOwner'),
+      evaluatedPackages: reader.integer('evaluatedPackages'),
+      changedPackages: reader.stringList('changedPackages'),
+      failures: MapReader.list(
+        reader.raw('failures') ?? const <Object?>[],
+        ScheduleSyncFailureModel.fromMap,
+        context: 'ScheduleSyncReport.failures',
+      ),
+      exactAlarmScheduled: reader.boolean('exactAlarmScheduled'),
+      nextTransitionAt: reader.integerOrNull('nextTransitionAt'),
+    );
+  }
+
+  final bool isDeviceOwner;
+  final int evaluatedPackages;
+
+  /// Packages whose suspension state was changed by this pass.
+  final List<String> changedPackages;
+  final List<ScheduleSyncFailureModel> failures;
+
+  /// False when the next transition uses an inexact alarm (or none).
+  final bool exactAlarmScheduled;
+  final int? nextTransitionAt;
+
+  @override
+  List<Object?> get props => [
+    isDeviceOwner,
+    evaluatedPackages,
+    changedPackages,
+    failures,
+    exactAlarmScheduled,
+    nextTransitionAt,
   ];
 }

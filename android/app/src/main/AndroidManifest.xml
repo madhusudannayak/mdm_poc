@@ -1,4 +1,25 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Package visibility (Android 11+). A device-management app must
+         inventory every installed application to allow, block and audit
+         them, which targeted <queries> entries cannot express.
+         Google Play treats this as a restricted permission: distribution
+         through Play requires declaring the device-management use case in
+         the Play Console permissions declaration form. -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
+    <!-- Re-arms schedule alarms and recovers missed transitions after a
+         reboot; alarms do not survive one. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Lets schedule transitions fire at the configured minute. On
+         Android 12+ this is a special access ("Alarms & reminders") the
+         user or an administrator can revoke; the app then falls back to
+         inexact alarms plus periodic reconciliation. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:label="mdd_poc"
         android:name="${applicationName}"
@@ -42,6 +63,34 @@
                 <action android:name="android.app.action.PROFILE_PROVISIONING_COMPLETE" />
             </intent-filter>
         </receiver>
+        <!-- Schedule transition alarm. Only this app can trigger it. -->
+        <receiver
+            android:name=".mdm.scheduling.MdmAlarmReceiver"
+            android:exported="false" />
+
+        <!-- Reboot and app-update recovery. Both actions are exempt from
+             the implicit-broadcast restrictions. -->
+        <receiver
+            android:name=".mdm.scheduling.MdmBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Clock, time-zone and exact-alarm-access changes. These system
+             broadcasts are exempt from the implicit-broadcast restrictions. -->
+        <receiver
+            android:name=".mdm.scheduling.MdmTimeChangeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
